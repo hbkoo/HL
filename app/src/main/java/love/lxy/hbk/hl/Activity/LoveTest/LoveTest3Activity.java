@@ -6,10 +6,13 @@ import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import love.lxy.hbk.hl.MyView.HeartClickLayout;
 import love.lxy.hbk.hl.MyView.HeartView;
 import love.lxy.hbk.hl.R;
 import love.lxy.hbk.hl.Util.Util;
@@ -27,6 +30,9 @@ public class LoveTest3Activity extends AppCompatActivity implements View.OnClick
     private HeartView dialog_heart_view = null;
     private boolean isStart = false;
 
+    private HeartClickLayout layout = null;
+    private GestureDetector gestureDetector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +49,9 @@ public class LoveTest3Activity extends AppCompatActivity implements View.OnClick
     }
 
     private void InitControl() {
+
+        gestureDetector = new GestureDetector(this, new onGestureListener());
+        layout = findViewById(R.id.love_test3_heart_click_layout);
 
         findViewById(R.id.love_test3_answerA_layout).setOnClickListener(this);
         findViewById(R.id.love_test3_answerB_layout).setOnClickListener(this);
@@ -170,4 +179,21 @@ public class LoveTest3Activity extends AppCompatActivity implements View.OnClick
         }
         super.onDestroy();
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        gestureDetector.onTouchEvent(event);
+        return true;
+    }
+
+    class onGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            if (Util.background_click_heart) {
+                layout.addLoveView(e.getRawX(), e.getRawY());
+            }
+            return super.onDoubleTap(e);
+        }
+    }
+
 }

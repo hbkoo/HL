@@ -11,6 +11,8 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -25,6 +27,7 @@ import java.util.Calendar;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
+import love.lxy.hbk.hl.MyView.HeartClickLayout;
 import love.lxy.hbk.hl.R;
 import love.lxy.hbk.hl.Service.MusicService;
 import love.lxy.hbk.hl.Util.Util;
@@ -38,6 +41,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private boolean last_is_remember_pwd = false;
     private String last_save_pwd = "";
+    private String last_save_username = "";
 
     private EditText et_tel, et_code;
     private Button btn_code;
@@ -45,6 +49,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private Typeface kaiti_typeface;
     private EventHandler eventHandler;
+
+    private HeartClickLayout layout = null;
+    private GestureDetector gestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,12 +80,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         Init();
 
-
-
     }
 
     private void Init() {
 
+        gestureDetector = new GestureDetector(this, new onGestureListener());
+        layout = findViewById(R.id.login_heart_click_layout);
         et_tel = findViewById(R.id.et_tel);
         et_code = findViewById(R.id.et_code);
         btn_code = findViewById(R.id.btn_code);
@@ -106,7 +113,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         last_is_remember_pwd = isRemember;
         if (isRemember) {
             last_save_pwd = preferences.getString("password", "");
-            et_tel.setText(preferences.getString("username", ""));
+            last_save_username = preferences.getString("username", "");
+            et_tel.setText(last_save_username);
             et_code.setText(last_save_pwd);
             remember_pwd_cb.setChecked(true);
         }
@@ -187,11 +195,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             "傻猪猪要先输入自己的手机号哦~", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (!Util.MY_DEAR_PHONE.equals(tel)) {
-                    Toast.makeText(this,
-                            "傻宝宝自己的手机号都不记得了呐（偷笑）", Toast.LENGTH_LONG).show();
-                    return;
-                }
+//                if (!Util.MY_DEAR_PHONE.equals(tel)) {
+//                    Toast.makeText(this,
+//                            "傻宝宝自己的手机号都不记得了呐（偷笑）", Toast.LENGTH_LONG).show();
+//                    return;
+//                }
                 SMSSDK.getVerificationCode("86", tel);
                 last_is_remember_pwd = false; // 重新获取验证码，上次密码失效
 
@@ -204,21 +212,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             "傻猪猪要先输入自己的手机号哦~", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (!Util.MY_DEAR_PHONE.equals(tel1)) {
-                    Toast.makeText(this,
-                            "傻宝宝自己的手机号都不记得了呐（偷笑）", Toast.LENGTH_LONG).show();
-                    return;
-                }
+//                if (!Util.MY_DEAR_PHONE.equals(tel1)) {
+//                    Toast.makeText(this,
+//                            "傻宝宝自己的手机号都不记得了呐（偷笑）", Toast.LENGTH_LONG).show();
+//                    return;
+//                }
                 if ("".equals(input_code)) {
                     // 密码为空
                     Toast.makeText(LoginActivity.this, "小傻瓜，爱的密码不能为空的呦",
                             Toast.LENGTH_LONG).show();
                 } else {
+//                    checkCodeSuccess();
                     if (last_is_remember_pwd) {
                         // 从上次记住的密码验证
-                        if (!et_tel.getText().toString().equals(Util.MY_DEAR_PHONE)) {
-                            Toast.makeText(this,
-                                    "傻宝宝自己的手机号都不记得了呐（偷笑）", Toast.LENGTH_LONG).show();
+//                        if (!et_tel.getText().toString().equals(Util.MY_DEAR_PHONE)) {
+//                            Toast.makeText(this,
+//                                    "傻宝宝自己的手机号都不记得了呐（偷笑）", Toast.LENGTH_LONG).show();
+//                            return;
+//                        }
+                        if (!tel1.equals(last_save_username)) {
+                            Toast.makeText(this, "手机号已更换\n请重新获取爱的密码", Toast.LENGTH_SHORT)
+                                    .show();
                             return;
                         }
                         if (input_code.equals(last_save_pwd)) {
@@ -228,7 +242,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        // 重新发送验证码验证
+                        // 验证码验证
                         SMSSDK.submitVerificationCode("86", et_tel.getText().toString(), input_code);
                     }
                 }
@@ -327,5 +341,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         stopService(intent);
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        gestureDetector.onTouchEvent(event);
+        return true;
+    }
 
+    class onGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            if (Util.background_click_heart) {
+                layout.addLoveView(e.getRawX(), e.getRawY());
+            }
+            return super.onDoubleTap(e);
+        }
+    }
 }

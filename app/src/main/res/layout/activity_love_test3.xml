@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<love.lxy.hbk.hl.MyView.HeartClickLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/love_test3_heart_click_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/LightPink"
@@ -146,4 +147,4 @@
 
 
 
-</FrameLayout>
+</love.lxy.hbk.hl.MyView.HeartClickLayout>

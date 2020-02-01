@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<love.lxy.hbk.hl.MyView.HeartClickLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/love_process_item_heart_click_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="love.lxy.hbk.hl.Activity.LoveProcessItemActivity">
@@ -129,4 +130,4 @@
 
     </LinearLayout>
 
-</FrameLayout>
+</love.lxy.hbk.hl.MyView.HeartClickLayout>

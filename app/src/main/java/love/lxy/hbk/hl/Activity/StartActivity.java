@@ -75,6 +75,7 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
     // 不是第一次打开APP，则直接进入
     private void startMain(){
         startActivity(new Intent(StartActivity.this,LoginActivity.class));
+//        startActivity(new Intent(StartActivity.this,MainActivity.class));
         finish();
     }
 

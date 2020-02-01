@@ -5,6 +5,9 @@ import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,11 +16,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import love.lxy.hbk.hl.MyView.HeartClickLayout;
 import love.lxy.hbk.hl.MyView.HeartView;
 import love.lxy.hbk.hl.R;
 import love.lxy.hbk.hl.Util.Util;
 
 public class LoveTestActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private String TAG = "LoveTestActivity";
 
     private Typeface kai_ti_typeface;
 
@@ -29,10 +35,15 @@ public class LoveTestActivity extends AppCompatActivity implements View.OnClickL
     private List<ImageView> imageViews = new ArrayList<>();
     private List<TextView> textViews = new ArrayList<>();
 
+    private HeartClickLayout layout = null;
+    private GestureDetector gestureDetector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_love_test);
+
+        gestureDetector = new GestureDetector(this, new onGestureListener());
 
         // 加载字体
         AssetManager manager = getAssets();
@@ -45,6 +56,8 @@ public class LoveTestActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void InitControl() {
+
+        layout = findViewById(R.id.love_test_heart_click_layout);
 
         if (Util.background_heart) {
             heartView = findViewById(R.id.love_test_heart_view);
@@ -133,6 +146,24 @@ public class LoveTestActivity extends AppCompatActivity implements View.OnClickL
             heartView.cancelAnimator();
         }
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        gestureDetector.onTouchEvent(event);
+        Log.i(TAG, "onTouchEvent: ");
+        return true;
+    }
+
+    class onGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            if (Util.background_click_heart) {
+                layout.addLoveView(e.getRawX(), e.getRawY());
+            }
+            return super.onDoubleTap(e);
+        }
+
     }
 
 }

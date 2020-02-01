@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
     <color name="colorPrimary">#FFC0CB</color>
     <color name="colorPrimaryDark">#FF69B4</color>
@@ -14,4 +15,6 @@
     <color name="orange">#ffff9800</color>
     <color name="myYellow">#FFFF01</color>
     <color name="myBackground">#F51B89</color>
+    <color name="black">#000000</color>
+    <color name="skyBlue">#B0E0EE</color>
 </resources>

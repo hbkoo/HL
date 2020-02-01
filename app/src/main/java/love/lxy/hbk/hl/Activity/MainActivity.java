@@ -12,7 +12,10 @@ import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +25,7 @@ import android.widget.Toast;
 
 import love.lxy.hbk.hl.Activity.LoveTest.LoveTest1Activity;
 import love.lxy.hbk.hl.Activity.LoveTest.LoveTestActivity;
+import love.lxy.hbk.hl.MyView.HeartClickLayout;
 import love.lxy.hbk.hl.MyView.HeartView;
 import love.lxy.hbk.hl.R;
 import love.lxy.hbk.hl.Service.MusicService;
@@ -31,6 +35,8 @@ import static love.lxy.hbk.hl.Util.Util.setViewTypeface;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private String TAG = "MainActivity";
+
     private Typeface kai_ti_typeface;
 
     private ImageView setting_iv;
@@ -39,11 +45,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private PopupMenu popupMenu = null;
 
+    private HeartClickLayout layout = null;
+    private GestureDetector gestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        gestureDetector = new GestureDetector(this, new onGestureListener());
 
         // 加载字体
         AssetManager manager = getAssets();
@@ -54,8 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(MainActivity.this, MusicService.class);
         startService(intent);
 
-//        startPigeonAnimator();
-
+        startPigeonAnimator();
 //        Util.startHeartJumpAnimator(left_pigeon_iv);
 
     }
@@ -63,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // 初始化控件
     private void InitControl() {
 
+        layout = findViewById(R.id.main_heart_click_layout);
         setting_iv = findViewById(R.id.main_setting_iv);
         left_pigeon_iv = findViewById(R.id.main_left_pigeon_iv);
         right_pigeon_iv = findViewById(R.id.main_right_pigeon_iv);
@@ -170,8 +180,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.love_other_layout:
-                Toast.makeText(this,"大傻傻再等一下呦，你的二傻傻狗狗正在努力开发中...",
-                        Toast.LENGTH_LONG).show();
+//                Toast.makeText(this,"大傻傻再等一下呦，你的二傻傻狗狗正在努力开发中...",
+//                        Toast.LENGTH_LONG).show();
+                startActivity(new Intent(MainActivity.this, MyHeartActivity.class));
                 break;
         }
     }
@@ -211,10 +222,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         case R.id.main_menu_bg_heart:
                             if (Util.background_heart) {
                                 Util.background_heart = false;
-                                item.setTitle("开启背景飞心");
+                                item.setTitle("开启背景满屏飞心");
                             } else {
                                 Util.background_heart = true;
-                                item.setTitle("关闭背景飞心");
+                                item.setTitle("关闭背景满屏飞心");
                             }
                             break;
                         case R.id.main_menu_bg_music:
@@ -228,6 +239,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 startService(new Intent(MainActivity.this, MusicService.class));
                             }
 //                            startActivity(new Intent(MainActivity.this, BackMusicActivity.class));
+                            break;
+                        case R.id.main_menu_bg_click_heart:
+                            if (Util.background_click_heart) {
+                                Util.background_click_heart = false;
+                                item.setTitle("开启背景点击飞心");
+                            } else {
+                                Util.background_click_heart = true;
+                                item.setTitle("关闭背景点击飞心");
+                            }
                             break;
                     }
                     return false;
@@ -248,4 +268,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startPigeonAnimator();
         }
     };
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        gestureDetector.onTouchEvent(event);
+        return true;
+    }
+
+    class onGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            if (Util.background_click_heart) {
+                layout.addLoveView(e.getRawX(), e.getRawY());
+            }
+            return super.onDoubleTap(e);
+        }
+    }
+
 }

@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -33,7 +34,8 @@ import love.lxy.hbk.hl.R;
 public class Util {
 
     public static boolean background_music = true;
-    public static boolean background_heart = true;
+    public static boolean background_heart = false;
+    public static boolean background_click_heart = true;
 
     public static boolean[] loveTest = {false, false, false, false, false};
 
@@ -66,7 +68,7 @@ public class Util {
     public static String LOGIN_DATA = "login_data";
 
     // 支持的手机号
-    public static String MY_DEAR_PHONE = "15537842050"; // 15537842050  15927037762
+    public static String MY_DEAR_PHONE = "15927037762"; // 15537842050  15927037762
 
     static public int getScreenHeight(Context context) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
@@ -616,5 +618,49 @@ public class Util {
             textview.setTypeface(typeface);
         }
     }
+
+    /**
+     * 根据角度获取爱心的某一个点坐标
+     * @param angle 待获取的该角度对应的点
+     * @param scale 心的尺度大小
+     * @param offsetX 心相对于中心的X偏移，一般取画布宽的一半
+     * @param offsetY 心相对于中心的Y偏移，一般取画布高的一半
+     * @return
+     */
+    public static Point getHeartPoint(float angle, int scale, int offsetX, int offsetY) {
+        float t = (float) (angle / Math.PI);
+        float x = (float) (scale * (16 * Math.pow(Math.sin(t), 3)));
+        float y = (float) (-scale * (13 * Math.cos(t) - 5 * Math.cos(2 * t)
+                - 2 * Math.cos(3 * t) - Math.cos(4 * t)));
+        return new Point(offsetX + (int) x, offsetY + (int) y);
+    }
+
+    /**
+     * 获取心形路径点集合
+     * @param width 界面的宽
+     * @param height 界面的高
+     * @param heartRadio 心形图案的大小；值越大图案越大，可以取 30
+     * @param angleSpace 心形图案的点的稀疏程度；值越大越稀疏，可以取 0.5f
+     * @return
+     */
+    public static List<Point> getHeartPath(int width, int height, int heartRadio, float angleSpace) {
+
+        List<Point> points = new ArrayList<>();
+
+        int offsetX = width / 2, offsetY = height / 2;
+        int scale = heartRadio * width / 1080;
+
+
+        float angle = 10;
+        while (angle < 180) {
+            points.add(getHeartPoint(angle, scale, offsetX, offsetY));
+            angle += angleSpace;
+        }
+
+        return points;
+
+    }
+
+
 
 }

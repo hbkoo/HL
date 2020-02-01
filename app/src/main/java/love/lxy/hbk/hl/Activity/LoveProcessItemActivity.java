@@ -26,8 +26,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -46,14 +48,18 @@ import java.util.Calendar;
 import java.util.List;
 
 import love.lxy.hbk.hl.Beans.LoveProcess;
+import love.lxy.hbk.hl.MyView.HeartClickLayout;
 import love.lxy.hbk.hl.R;
 import love.lxy.hbk.hl.Util.DataProcessing;
 import love.lxy.hbk.hl.Util.ProcessDataHelper;
 import love.lxy.hbk.hl.Util.ShowImageViewPagerAdapter;
+import love.lxy.hbk.hl.Util.Util;
 
 import static love.lxy.hbk.hl.Util.Util.setViewTypeface;
 
 public class LoveProcessItemActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private String TAG = "LoveProcessItemActivity";
 
     public static int CHANGE = 3;
     private boolean isChanged = false;
@@ -83,6 +89,9 @@ public class LoveProcessItemActivity extends AppCompatActivity implements View.O
     private List<View> imageViewList = new ArrayList<>();
     private ShowImageViewPagerAdapter adapter;
 
+    private HeartClickLayout layout = null;
+    private GestureDetector gestureDetector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +117,10 @@ public class LoveProcessItemActivity extends AppCompatActivity implements View.O
     }
 
     private void InitControl() {
+
+        gestureDetector = new GestureDetector(this, new onGestureListener());
+        layout = findViewById(R.id.love_process_item_heart_click_layout);
+
         title_et = findViewById(R.id.love_process_item_activity_title_et);
         content_et = findViewById(R.id.love_process_item_activity_content_et);
         time_tv = findViewById(R.id.love_process_item_activity_time_tv);
@@ -572,4 +585,23 @@ public class LoveProcessItemActivity extends AppCompatActivity implements View.O
         }
         return super.onKeyDown(keyCode, event);
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        gestureDetector.onTouchEvent(event);
+        return true;
+    }
+
+    class onGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            if (Util.background_click_heart) {
+                Log.i(TAG, "onSingleTapUp: x : " + e.getRawX() + ", y : " + e.getRawY());
+                layout.addLoveView(e.getRawX(), e.getRawY());
+            }
+            return super.onDoubleTap(e);
+        }
+    }
+
+
 }

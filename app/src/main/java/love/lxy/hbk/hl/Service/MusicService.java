@@ -46,8 +46,8 @@ public class MusicService extends Service {
             // 设置播放的音乐的音量大小
             AudioManager audioMgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             if (audioMgr != null) {
-                audioMgr.setStreamVolume(AudioManager.STREAM_MUSIC, 3,
-                        AudioManager.FLAG_PLAY_SOUND);
+//                audioMgr.setStreamVolume(AudioManager.STREAM_MUSIC, 3,
+//                        AudioManager.FLAG_PLAY_SOUND);
                 Log.i("background music",
                         "onStartCommand: " + audioMgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
             }

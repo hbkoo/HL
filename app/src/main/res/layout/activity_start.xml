@@ -14,6 +14,13 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
         android:src="@drawable/pig"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="68dp"
+        android:textColor="@color/skyBlue"
+        android:text="点我"/>
 
 
 </FrameLayout>

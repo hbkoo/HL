@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import love.lxy.hbk.hl.MyView.HeartClickLayout;
 import love.lxy.hbk.hl.MyView.HeartView;
 import love.lxy.hbk.hl.R;
 import love.lxy.hbk.hl.Service.MusicService;
@@ -42,6 +44,9 @@ public class LoveTest1Activity extends AppCompatActivity implements View.OnClick
     private View dialog_view = null;
     private AlertDialog dialog = null;
 
+    private HeartClickLayout layout = null;
+    private GestureDetector gestureDetector;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +59,9 @@ public class LoveTest1Activity extends AppCompatActivity implements View.OnClick
     }
 
     private void InitControl() {
+
+        gestureDetector = new GestureDetector(this, new onGestureListener());
+        layout = findViewById(R.id.love_test1_heart_click_layout);
 
         findViewById(R.id.love_test1_last_question_iv).setOnClickListener(this);
         findViewById(R.id.love_test1_next_question_iv).setOnClickListener(this);
@@ -269,4 +277,22 @@ public class LoveTest1Activity extends AppCompatActivity implements View.OnClick
             dialog.dismiss();
         }
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        gestureDetector.onTouchEvent(event);
+        return true;
+    }
+
+    class onGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            if (Util.background_click_heart) {
+                layout.addLoveView(e.getRawX(), e.getRawY());
+            }
+            return super.onDoubleTap(e);
+        }
+
+    }
+
 }

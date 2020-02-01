@@ -9,6 +9,8 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,10 +18,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import love.lxy.hbk.hl.MyView.HeartClickLayout;
 import love.lxy.hbk.hl.MyView.HeartPathView;
 import love.lxy.hbk.hl.MyView.HeartView;
 import love.lxy.hbk.hl.R;
 import love.lxy.hbk.hl.Service.MusicService;
+import love.lxy.hbk.hl.Util.GestureListener;
 import love.lxy.hbk.hl.Util.Util;
 
 public class LoveTimeActivity extends AppCompatActivity {
@@ -38,10 +42,15 @@ public class LoveTimeActivity extends AppCompatActivity {
 
     private List<TextView> textViews = new ArrayList<>();
 
+    private HeartClickLayout layout = null;
+    private GestureDetector gestureDetector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_love_time);
+
+        gestureDetector = new GestureDetector(this, new onGestureListener());
 
         // 加载字体
         AssetManager manager = getAssets();
@@ -58,6 +67,7 @@ public class LoveTimeActivity extends AppCompatActivity {
 
     private void InitControl() {
 
+        layout = findViewById(R.id.love_time_heart_clicked_layout);
         HeartPathView heartPathView = findViewById(R.id.love_time_heart_path_view);
         heartPathView.setBackgroundID(LoveTimeActivity.this, R.drawable.pigeons_bg);
 
@@ -293,5 +303,24 @@ public class LoveTimeActivity extends AppCompatActivity {
             Util.valueAlphaAnimation(textViews.get(msg.what));
         }
     };
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        gestureDetector.onTouchEvent(event);
+        return true;
+    }
+
+    class onGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            if (Util.background_click_heart) {
+                layout.addLoveView(e.getRawX(), e.getRawY());
+            }
+            return super.onDoubleTap(e);
+        }
+
+    }
+
+
 
 }

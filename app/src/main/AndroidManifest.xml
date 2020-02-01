@@ -61,7 +61,8 @@
         <activity android:name=".Activity.LoveTest.LoveTestActivity" />
         <activity android:name=".Activity.LoveTest.LoveTest0Activity" />
         <activity android:name=".Activity.LoveTest.LoveTest3Activity" />
-        <activity android:name=".Activity.LoveTest.LoveTest2Activity"></activity>
+        <activity android:name=".Activity.LoveTest.LoveTest2Activity" />
+        <activity android:name=".Activity.MyHeartActivity"></activity>
     </application>
 
 </manifest>
